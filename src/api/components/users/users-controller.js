@@ -50,8 +50,23 @@ async function createUser(request, response, next) {
     const name = request.body.name;
     const email = request.body.email;
     const password = request.body.password;
+    const passwordConfirm = request.body.password_confirm;
+    const check_Email = await usersService.checkEmail(email);
 
+    if (password !== passwordConfirm) {
+      throw errorResponder(
+        errorTypes.INVALID_PASSWORD,
+        'Password and password confirmation do not match'
+      );
+    }
     const success = await usersService.createUser(name, email, password);
+
+    if (!check_Email) {
+      throw errorResponder(
+        errorTypes.EMAIL_ALREADY_TAKEN,
+        'Email alredy exist'
+      );
+    }
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
@@ -93,6 +108,30 @@ async function updateUser(request, response, next) {
 }
 
 /**
+ * change password
+ */
+async function changePassword(request, response, next) {
+  try {
+    const id = request.params.id;
+    const oldPassword = request.body.oldPassword;
+    const newPassword = request.body.newPassword;
+    const confirmPassword = request.body.confirmPassword;
+
+    const change_Password = await usersService.changePassword(
+      id,
+      oldPassword,
+      newPassword,
+      confirmPassword
+    );
+
+    return response
+      .status(200)
+      .json({ message: 'Password changed successfully' });
+  } catch (error) {
+    return next(error);
+  }
+}
+/**
  * Handle delete user request
  * @param {object} request - Express request object
  * @param {object} response - Express response object
@@ -122,5 +161,6 @@ module.exports = {
   getUser,
   createUser,
   updateUser,
+  changePassword,
   deleteUser,
 };

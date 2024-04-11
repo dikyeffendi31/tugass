@@ -1,3 +1,4 @@
+const passport = require('passport');
 const { User } = require('../../../models');
 
 /**
@@ -53,6 +54,9 @@ async function updateUser(id, name, email) {
   );
 }
 
+async function updatePassword(id, newPassword) {
+  await User.findByIdAndUpdate(id, { password: newPassword });
+}
 /**
  * Delete a user
  * @param {string} id - User ID
@@ -62,10 +66,21 @@ async function deleteUser(id) {
   return User.deleteOne({ _id: id });
 }
 
+/**
+ * get user email detail
+ *  @param {string}email - user email
+ *  @returns {Promise}
+ */
+async function getEmail(email) {
+  return User.findOne({ email: email });
+}
+
 module.exports = {
   getUsers,
   getUser,
   createUser,
   updateUser,
+  getEmail,
+  updatePassword,
   deleteUser,
 };
