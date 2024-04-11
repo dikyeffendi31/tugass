@@ -108,7 +108,7 @@ async function deleteUser(id) {
   return true;
 }
 async function changePassword(id, oldPassword, newPassword, confirmPassword) {
-  if ((newPassword = confirmPassword)) {
+  if (newPassword !== confirmPassword) {
     throw new Error("New password doesn't match confirmation");
   }
 
