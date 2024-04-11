@@ -143,5 +143,6 @@ module.exports = {
   createUser,
   updateUser,
   checkEmail,
+  changePassword,
   deleteUser,
 };
